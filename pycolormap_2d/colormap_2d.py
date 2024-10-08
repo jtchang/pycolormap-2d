@@ -6,11 +6,12 @@ This module contains the ColorMap2D base class and its instantiable children.
 """
 
 import abc
-from typing import Tuple, TypeVar, Generic, Any
+from typing import Tuple, TypeVar, Generic, Any, Literal, Annotated
 
 import importlib_resources
 import numpy as np
-from nptyping import NDArray, UInt8, Shape
+
+from numpy.typing import NDArray
 
 Number = TypeVar("Number", int, float)
 
@@ -29,7 +30,7 @@ class BaseColorMap2D(Generic[Number], metaclass=abc.ABCMeta):
     :type range_y: Tuple[float, float]
     """
 
-    _cmap_data: NDArray[Shape, UInt8]
+    _cmap_data: Annotated[NDArray[np.uint8], Literal["N", 3]]
     _cmap_width: int
     _cmap_height: int
     range_x: Tuple[float, float]
@@ -55,7 +56,7 @@ class BaseColorMap2D(Generic[Number], metaclass=abc.ABCMeta):
         class_name = type(self).__name__
         return f'{class_name}'
 
-    def __call__(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def __call__(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return self.sample(x, y)
 
     @staticmethod
@@ -85,7 +86,7 @@ class BaseColorMap2D(Generic[Number], metaclass=abc.ABCMeta):
         return (value - from_range[0]) * (to_range[1] - to_range[0]) / (
                 from_range[1] - from_range[0]) + to_range[0]
 
-    def get_cmap_data(self) -> NDArray[Shape, UInt8]:
+    def get_cmap_data(self) -> Annotated[NDArray[np.uint8], Literal["N", 3]]:
         return self._cmap_data.copy()
 
     def _scale_x(self, x: float) -> float:
@@ -96,7 +97,7 @@ class BaseColorMap2D(Generic[Number], metaclass=abc.ABCMeta):
         return self._linearly_scale_value(y, self.range_y,
                                           (0.0, float(self._cmap_height - 1)))
 
-    def _sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def _sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         image_x = int(self._clamp(round(self._scale_x(x)),
                                   (0, self._cmap_width - 1)))
         image_y = int(self._clamp(round(self._scale_y(y)),
@@ -105,7 +106,7 @@ class BaseColorMap2D(Generic[Number], metaclass=abc.ABCMeta):
         return self._cmap_data[image_x, image_y, :]
 
     @abc.abstractmethod
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         """Get the color value at position (x, y).
 
         :param x: The x-coordinate (in the x_range given in the constructor or
@@ -134,7 +135,7 @@ class ColorMap2DBremm(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/bremm.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)
 
 
@@ -153,7 +154,7 @@ class ColorMap2DCubeDiagonal(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/cubediagonal.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)
 
 
@@ -172,7 +173,7 @@ class ColorMap2DSchumann(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/schumann.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)
 
 
@@ -191,7 +192,7 @@ class ColorMap2DSteiger(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/steiger.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)
 
 
@@ -210,7 +211,7 @@ class ColorMap2DTeuling2(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/teulingfig2.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)
 
 
@@ -229,5 +230,5 @@ class ColorMap2DZiegler(BaseColorMap2D):
                  range_y: Tuple[float, float] = (0.0, 1.0)) -> None:
         super().__init__("data/ziegler.npy", range_x, range_y)
 
-    def sample(self, x: Number, y: Number) -> NDArray[Shape["3"], UInt8]:
+    def sample(self, x: Number, y: Number) -> Annotated[NDArray[np.uint8], Literal[3]]:
         return super()._sample(x, y)

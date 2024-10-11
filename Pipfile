@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 numpy = "*"
 importlib-resources = "*"
+setuptools = "*"
 
 [dev-packages]
 "flake8" = "*"

@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-nptyping = "*"
+
 importlib-resources = "*"
 
 [dev-packages]

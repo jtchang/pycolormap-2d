@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-
 importlib-resources = "*"
 
 [dev-packages]
@@ -15,7 +14,6 @@ ipython = "*"
 mypy = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
-nptyping = "*"
 twine = "*"
 typing_extensions = "*"
 
